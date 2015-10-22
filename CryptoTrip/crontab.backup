@@ -1,0 +1,2 @@
+*/5 * * * * /root/cryptotrip.bash run_once &>/dev/null
+* * * * * ps -ef | grep "cryptotrip.bash [l]og_wait" &>/dev/null; if [[ $? == 1 ]]; then systemctl start cryptotrip; fi
