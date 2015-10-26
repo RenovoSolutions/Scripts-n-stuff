@@ -1,0 +1,18 @@
+{
+  "Comment": "COMMENT_TXT",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "NAME_FQDN",
+        "Type": "A",
+        "TTL": TTL_NUM_SEC,
+        "ResourceRecords": [
+          {
+            "Value": "PUB_IP"
+          }
+        ]
+      }
+    }
+  ]
+}

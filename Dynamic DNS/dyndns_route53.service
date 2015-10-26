@@ -1,0 +1,9 @@
+[Unit]
+Description=Runs DNS update for Route53
+
+[Service]
+ExecStart=/bin/sh -c '/root/dyndns.bash &>/dev/null'
+ExecStop=:
+
+[Install]
+WantedBy=multi-user.target
