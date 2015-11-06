@@ -40,5 +40,6 @@ listener "tcp" {
 *Start vault  
 vault server -config=config.hcl  
 vault init -key-shares=8 -key-threshold=1  
+export VAULT_ADDR=http://127.0.0.1
 
 Vault will initialize and spit out the sharded master key and the root token. Save these in a safe place and distribute accordingly.  

@@ -1,3 +1,5 @@
+Note: Currently deprecated with the release of CryptoWall 4.0 -- will revisit at a later date  
+
 Setup:  
 *Requires that samba is running with full_audit configured to log to /var/log/samba/audit.log  
 *Full audit must be logging pwrite (for writes) and chmod (when files are created, in case the file is encrypted then replaced)
