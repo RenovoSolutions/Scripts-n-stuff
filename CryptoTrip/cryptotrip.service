@@ -1,9 +1,0 @@
-[Unit]
-Description=Starts monitor service for cryptotrip.bash
-
-[Service]
-ExecStart=/bin/sh -c '/root/cryptotrip.bash log_wait &>/dev/null'
-ExecStop=ps -ef | grep "[c]ryptotrip.bash log_wait" | awk ' {print $2} ' | while read cpid; do kill ${cpid}; done
-
-[Install]
-WantedBy=multi-user.target
