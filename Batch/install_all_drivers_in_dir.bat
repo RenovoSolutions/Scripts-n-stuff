@@ -1,0 +1,1 @@
+for /r %%i in (*.inf) do pnputil.exe -i -a "%%i"
