@@ -1,0 +1,184 @@
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=8">
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Map Network Drive</title>
+  <style type="text/css">
+		.form-style{
+			width:450px;
+			padding:30px;
+			margin:40px auto;
+		}
+		.form-style .inner-wrap{
+			padding: 30px;
+			background: #F8F8F8;
+			margin-bottom: 15px;
+		}
+		.form-style h1{
+			background: #2A88AD;
+			padding: 20px 30px 15px 30px;
+			margin: -30px -30px 30px -30px;
+			color: #fff;
+			font: normal 30px Arial, Helvetica, serif;
+			border: 1px solid #257C9E;
+		}
+		.form-style h1 > span{
+			display: block;
+			margin-top: 2px;
+			font: 13px Arial, Helvetica, sans-serif;
+		}
+		.form-style label{
+			display: block;
+			font: 13px Arial, Helvetica, sans-serif;
+			color: #888;
+			margin-bottom: 15px;
+		}
+		.form-style input[type="text"],
+		.form-style input[type="password"],
+		.form-style select {
+			display: block;
+			width: 100%;
+			padding: 8px;
+			border: 2px solid #e5e5e5;
+		}
+		.form-style input[type="text"]:focus,
+		.form-style input[type="password"]:focus{
+			background: #edfaf0;
+		}
+		.form-style .section{
+			font: normal 20px Arial, Helvetica, serif;
+			color: #2A88AD;
+			margin-bottom: 5px;
+		}
+		.form-style .section span {
+			background: #2A88AD;
+			padding: 5px 10px 5px 10px;
+			position: absolute;
+			border: 4px solid #fff;
+			font-size: 14px;
+			margin-left: -45px;
+			color: #fff;
+			margin-top: -3px;
+		}
+		.form-style input[type="button"]{
+			background: #2A88AD;
+			padding: 8px 20px 8px 20px;
+			color: #fff;
+			text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+			font: normal 30px 'Bitter', serif;
+			border: 1px solid #257C9E;
+			font-size: 15px;
+		}
+		.form-style input[type="button"]:hover{
+			background: #2A6881;
+		}
+		.warning{
+			color: #ff3333;
+			font-size:24px;
+		}
+  </style>
+	<HTA:APPLICATION 
+		 APPLICATIONNAME="Map Network Drive"
+		 SCROLL="yes"
+		 SINGLEINSTANCE="yes"
+	>
+	<script language="vbscript" type="text/vbscript" id="windowResize">
+		Const	WINDOW_WIDTH = 800, WINDOW_HEIGHT = 800
+		window.offscreenBuffering = True
+
+		window.resizeTo WINDOW_WIDTH, WINDOW_HEIGHT
+		window.moveTo (window.screen.width - WINDOW_WIDTH) / 2, (window.screen.height - WINDOW_HEIGHT) / 2
+	</script>
+</head>
+
+<script language="VBScript" type="text/vbscript" id="Window_onLoad">
+	Sub Window_onLoad
+		For i = 67 To 90
+		  If Not CreateObject("Scripting.FileSystemObject").DriveExists(Chr(i) & ":") Then availableDrive = Chr(i) & ":"
+		  Set objOption = Document.createElement("OPTION")
+		  objOption.Text = availableDrive
+		  objOption.Value = availableDrive
+		  If Len(availableDrive) = 0 Then
+		  Else
+		  listDrives.Add(objOption)
+		  End If
+		Next
+	End Sub
+</script>
+<script language="VBScript" type="text/vbscript" id="MapDrive">
+	Sub MapDrive
+		Dim objNetwork, strRemoteShare
+		Set objNetwork = CreateObject("WScript.Network")
+		objNetwork.MapNetworkDrive listDrives.Value, Path.Value, true, Username.Value, Password.Value
+	End Sub
+</script>
+<script language="VBScript" type="text/vbscript" id="Patch">
+	Sub Patch
+		On Error Resume Next
+		blnAnswer = window.confirm("WARNING: This patch will reboot your PC, press OK to continue.") 
+		If blnAnswer Then
+			key = CreateObject("WScript.Shell").RegRead("HKEY_USERS\S-1-5-19\Environment\TEMP")
+			If err.number <> 0 Then
+				window.confirm("You need to run as admin!")
+			Else
+				Set WshShell = CreateObject("WScript.Shell")
+				myKey = "HKLM\SYSTEM\CurrentControlSet\Services\WebClient\Parameters\BasicAuthLevel"
+				WshShell.RegWrite myKey,2,"REG_DWORD"
+				WshShell.run "cmd.exe /C shutdown /r",0,True
+			End If
+		Else 
+			Msgbox "You clicked the Cancel button." 
+		End If 
+	End Sub
+</script>
+
+<body>
+	<div class="form-style">
+		<h1>
+			Map your shared drive...
+		</h1>
+		<div class="form">
+			<div class="warning"><script language="VBScript" type="text/vbscript">
+					On Error Resume Next
+					authLevel = CreateObject("WScript.Shell").RegRead("HKLM\SYSTEM\CurrentControlSet\Services\WebClient\Parameters\BasicAuthLevel")
+					On Error Resume Next
+					key = CreateObject("WScript.Shell").RegRead("HKEY_USERS\S-1-5-19\Environment\TEMP")
+					If err.number <> 0 Then
+					  isAdmin = True
+					  If authLevel <> 2 Then Document.write "! ERROR: You must run as administrator!"
+					End If
+			</script></div>
+			<div class="section">
+				<span>1</span>Prerequisites
+				<br><br><input type="button" value="Patch My PC for Webdav and Reboot" name="reg_button" onClick="Patch">
+				<font color="#52D46A"><script language="VBScript" type="text/vbscript">
+					On Error Resume Next
+					authLevel = CreateObject("WScript.Shell").RegRead("HKLM\SYSTEM\CurrentControlSet\Services\WebClient\Parameters\BasicAuthLevel")
+					If authLevel = 2 Then Document.write "&#10003; Done!"
+				</script></font>
+				<font color=#FF3333"><script language="VBScript" type="text/vbscript">
+					isPatched = False
+					On Error Resume Next
+					authLevel = CreateObject("WScript.Shell").RegRead("HKLM\SYSTEM\CurrentControlSet\Services\WebClient\Parameters\BasicAuthLevel")
+					If authLevel <> 2 Then Document.write "&#10006; Not complete!"
+				</script></font>
+			</div>
+			<br><div class="section">
+				<span>2</span>Username &amp; Password
+			</div>
+				<div class="inner-wrapper">
+					<label>Username <input type="text" name="Username" /></label>
+					<label>Password <input type="password" name="Password" /></label>
+				</div>
+			<div class="section">
+				<span>3</span>Path &amp; Drive Letter
+			</div>
+				<div class="inner-wrapper">
+					<label>Path <input type="text" name="Path" value="" /></label>
+					<label>Drive Letter <select size="5" name="listDrives"></select>
+					<input type="button" value="Map Drive" name="run_button"  onClick="MapDrive">
+				</div>
+		</div>
+	</div>
+</body>
