@@ -1,0 +1,1 @@
+Map a network drive using an HTML application with VBScript inside. HTA is converted to exe for privilege escalation to perform registry edit. You could easily remove the regedit if you don't need to be webdav compatible or it will be implemented another way and no admin privileges should be needed to map regular network drives.
